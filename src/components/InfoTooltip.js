@@ -1,6 +1,6 @@
 import React from "react";
 
-function InfoTooltip({ isOpen, onClose, isLogin }) {
+function InfoTooltip({ isOpen, onClose, isRegister }) {
   return (
     <div
       onClick={onClose}
@@ -19,10 +19,10 @@ function InfoTooltip({ isOpen, onClose, isLogin }) {
         />
         <div className="infotooltip">
           <div
-            className={`infotooltip__pic_type_${isLogin ? "ok" : "error"}`}
+            className={`infotooltip__pic_type_${isRegister ? "ok" : "error"}`}
           />
           <p className="infotooltip__text">
-            {isLogin
+            {isRegister
               ? "Вы успешно зарегистрировались!"
               : "Что-то пошло не так! Попробуйте ещё раз."}
           </p>

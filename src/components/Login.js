@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-function Login({ onRegister, onLogin }) {
+function Login({ onReg, onLog, onLogin, message }) {
   const [state, setState] = useState("");
   const inputRef = useRef();
   const isValid = true;
@@ -9,11 +9,12 @@ function Login({ onRegister, onLogin }) {
     borderBottomColor: "#ccc",
   };
 
+
   useEffect(() => {
     setState({ email: "", password: "" });
     inputRef.current.focus();
-    onRegister(true);
-    onLogin(false);
+    onReg(true);
+    onLog(false);
   }, []);
 
   const handleInputChange = (e) => {
@@ -22,12 +23,17 @@ function Login({ onRegister, onLogin }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    onLogin({ email: state.email, password: state.password })
+      .then(() => setState(""))
+      .catch((err) => console.log(err));
   };
 
   return (
     <div className="conteiner">
       <form onSubmit={handleSubmit} className="form">
         <h3 className="form__title">Вход</h3>
+        {message}
         <fieldset className="form__conteiner">
           <input
             type="email"

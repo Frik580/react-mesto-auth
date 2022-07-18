@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Header({ loggedIn, signIn, signUp }) {
+function Header({ loggedIn, signIn, signUp, email, onLogout }) {
   return (
     <header className="header">
       <p className="header__logo"></p>
@@ -18,8 +18,8 @@ function Header({ loggedIn, signIn, signUp }) {
         )}
         {loggedIn && (
           <>
-            <p className="header__text">Email</p>
-            <p className="link" style={{ color: "#A9A9A9" }}>
+            <p className="header__text">{email}</p>
+            <p onClick={onLogout} className="link" style={{ color: "#A9A9A9" }}>
               Выйти
             </p>
           </>

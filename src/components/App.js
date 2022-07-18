@@ -12,8 +12,10 @@ import AddPlacePopup from "./AddPlacePopup";
 import SubmitPopup from "./SubmitPopup";
 import ImagePopup from "./ImagePopup";
 import InfoTooltip from "./InfoTooltip";
+import ProtectedRoute from "./ProtectedRoute";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import * as auth from "./Auth";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -22,24 +24,17 @@ function App() {
   const [isSubmitPopupOpen, setIsSubmitPopupOpen] = useState(false);
   const [isInfoTooltip, setIsInfoTooltip] = useState(false);
   const [isPostCardError, setIsPostCardError] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
+  const [message, setMessage] = useState("");
   const [selectedCard, setSelectedCard] = useState({});
   const [deletedCard, setDeletedCard] = useState({});
   const [currentUser, setCurrentUser] = useState("");
+  const [userEmail, SetUserEmail] = useState("");
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [signIn, setSignIn] = useState(false);
   const [signUp, setSignUp] = useState(false);
-
   const navigate = useNavigate();
-  useEffect(() => {
-    if (loggedIn) {
-      setSignIn(false);
-      setSignUp(false);
-      return navigate("/");
-    } else {
-      return navigate("/sign-in");
-    }
-  }, [loggedIn]);
 
   useEffect(() => {
     const promises = [api.getUserInfo(), api.getCardList()];
@@ -136,10 +131,6 @@ function App() {
       });
   }
 
-  function handleOpenInfoTooltip() {
-    setIsInfoTooltip(true);
-  }
-
   function closeAllPopups() {
     setSelectedCard({});
     setIsEditProfilePopupOpen(false);
@@ -149,15 +140,71 @@ function App() {
     setIsInfoTooltip(false);
   }
 
+  useEffect(() => {
+    if (loggedIn) {
+      setSignIn(false);
+      setSignUp(false);
+      navigate("/");
+    }
+  }, [loggedIn]);
+
+  const handleAuth = async (jwt) => {
+    const content = await auth.getContent(jwt).then((res) => {
+      if (res) {
+        setLoggedIn(true);
+        SetUserEmail(res.data.email);
+      }
+    });
+    return content;
+  };
+
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      handleAuth(jwt);
+    }
+  }, [loggedIn]);
+
+  const onRegister = ({ email, password }) => {
+    setIsRegister(true);
+    return auth.register(email, password).then((res) => {
+      setIsInfoTooltip(true);
+      res.error && setIsRegister(false);
+      return res;
+    });
+  };
+
+  const onLogin = ({ email, password }) => {
+    return auth.authorize(email, password).then((res) => {
+      if (res.token) {
+        localStorage.setItem("jwt", res.token);
+        setLoggedIn(true);
+      } else {
+        setMessage(res.message);
+      }
+    });
+  };
+
+  const onLogout = () => {
+    localStorage.removeItem("jwt");
+    setLoggedIn(false);
+  };
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root">
-        <Header loggedIn={loggedIn} signIn={signIn} signUp={signUp} />
+        <Header
+          loggedIn={loggedIn}
+          signIn={signIn}
+          signUp={signUp}
+          email={userEmail}
+          onLogout={onLogout}
+        />
         <Routes>
           <Route
             path="/"
             element={
-              <>
+              <ProtectedRoute loggedIn={loggedIn}>
                 <Main
                   onEditProfile={() => setIsEditProfilePopupOpen(true)}
                   onAddPlace={() => setIsAddPlacePopupOpen(true)}
@@ -171,15 +218,16 @@ function App() {
                   cards={cards}
                 />
                 <Footer />
-              </>
+              </ProtectedRoute>
             }
           />
           <Route
             path="sign-up"
             element={
               <Register
-                onRegister={(data) => setSignUp(data)}
-                onLogin={(data) => setSignIn(data)}
+                onReg={(data) => setSignUp(data)}
+                onLog={(data) => setSignIn(data)}
+                onRegister={onRegister}
               />
             }
           />
@@ -187,9 +235,17 @@ function App() {
             path="sign-in"
             element={
               <Login
-                onRegister={(data) => setSignUp(data)}
-                onLogin={(data) => setSignIn(data)}
+                onReg={(data) => setSignUp(data)}
+                onLog={(data) => setSignIn(data)}
+                onLogin={onLogin}
+                message={message}
               />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <p style={{ textAlign: "center" }}>Здесь ничего нет: 404!</p>
             }
           />
         </Routes>
@@ -222,10 +278,8 @@ function App() {
 
         <InfoTooltip
           isOpen={isInfoTooltip}
-          // isOpen={true}
           onClose={closeAllPopups}
-          isLogin={true}
-          // onUpdateAvatar={handleUpdateAvatar}
+          isRegister={isRegister}
         />
 
         <ImagePopup сard={selectedCard} onClose={closeAllPopups} />

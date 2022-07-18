@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-function Register({ onRegister, onLogin }) {
+function Register({ onReg, onLog, onRegister }) {
   const [state, setState] = useState("");
   const inputRef = useRef();
   const isValid = true;
@@ -10,11 +10,13 @@ function Register({ onRegister, onLogin }) {
     borderBottomColor: "#ccc",
   };
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setState({ email: "", password: "" });
     inputRef.current.focus();
-    onRegister(false);
-    onLogin(true);
+    onReg(false);
+    onLog(true);
   }, []);
 
   const handleInputChange = (e) => {
@@ -23,6 +25,9 @@ function Register({ onRegister, onLogin }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+      onRegister({ email: state.email, password: state.password })
+        .then(() => navigate('/sign-in'))
+        .catch((err) => console.log(err));
   };
 
   return (
