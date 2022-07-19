@@ -51,11 +51,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isPostCardError }) {
     <PopupWithForm
       // name="add"
       title="Новое место"
-      buttonValue={
-        isPostCardError
-          ? "Ошибка в загрузке данных. Проверьте заполнение полей."
-          : buttonValue
-      }
+      buttonValue={isPostCardError ? "Ошибка в загрузке данных" : buttonValue}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit(onHandle)}

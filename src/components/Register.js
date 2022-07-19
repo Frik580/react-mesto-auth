@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Register({ onReg, onLog, onRegister }) {
   const [state, setState] = useState("");
@@ -9,8 +9,6 @@ function Register({ onReg, onLog, onRegister }) {
     color: "#fff",
     borderBottomColor: "#ccc",
   };
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     setState({ email: "", password: "" });
@@ -25,9 +23,7 @@ function Register({ onReg, onLog, onRegister }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-      onRegister({ email: state.email, password: state.password })
-        .then(() => navigate('/sign-in'))
-        .catch((err) => console.log(err));
+      onRegister({ email: state.email, password: state.password });
   };
 
   return (

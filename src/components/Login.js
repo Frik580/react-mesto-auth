@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-function Login({ onReg, onLog, onLogin, message }) {
+function Login({ onReg, onLog, onLogin, messageError }) {
   const [state, setState] = useState("");
   const inputRef = useRef();
   const isValid = true;
@@ -8,7 +8,6 @@ function Login({ onReg, onLog, onLogin, message }) {
     color: "#fff",
     borderBottomColor: "#ccc",
   };
-
 
   useEffect(() => {
     setState({ email: "", password: "" });
@@ -23,17 +22,14 @@ function Login({ onReg, onLog, onLogin, message }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    onLogin({ email: state.email, password: state.password })
-      .then(() => setState(""))
-      .catch((err) => console.log(err));
+    onLogin({ email: state.email, password: state.password });
   };
 
   return (
     <div className="conteiner">
       <form onSubmit={handleSubmit} className="form">
         <h3 className="form__title">Вход</h3>
-        {message}
+        {messageError}
         <fieldset className="form__conteiner">
           <input
             type="email"

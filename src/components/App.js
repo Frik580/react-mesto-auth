@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../utils/Api";
+import * as auth from "../utils/Auth";
 import "../index.css";
 import Header from "./Header";
 import Main from "./Main";
@@ -15,7 +16,6 @@ import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import * as auth from "./Auth";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -24,8 +24,10 @@ function App() {
   const [isSubmitPopupOpen, setIsSubmitPopupOpen] = useState(false);
   const [isInfoTooltip, setIsInfoTooltip] = useState(false);
   const [isPostCardError, setIsPostCardError] = useState(false);
+  const [isEditAvatarError, setIsEditAvatarError] = useState(false);
+  const [isEditProfileError, setIsEditProfileError] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
-  const [message, setMessage] = useState("");
+  const [messageError, setMessageError] = useState("");
   const [selectedCard, setSelectedCard] = useState({});
   const [deletedCard, setDeletedCard] = useState({});
   const [currentUser, setCurrentUser] = useState("");
@@ -36,6 +38,7 @@ function App() {
   const [signUp, setSignUp] = useState(false);
   const navigate = useNavigate();
 
+  // API даннах
   useEffect(() => {
     const promises = [api.getUserInfo(), api.getCardList()];
     Promise.all(promises)
@@ -67,6 +70,10 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
+        setIsEditProfileError(true);
+        setTimeout(() => {
+          setIsEditProfileError(false);
+        }, 4000);
         console.log(err);
       });
   }
@@ -79,6 +86,10 @@ function App() {
         closeAllPopups();
       })
       .catch((err) => {
+        setIsEditAvatarError(true);
+        setTimeout(() => {
+          setIsEditAvatarError(false);
+        }, 4000);
         console.log(err);
       });
   }
@@ -95,7 +106,7 @@ function App() {
         setIsPostCardError(true);
         setTimeout(() => {
           setIsPostCardError(false);
-        }, 2000);
+        }, 4000);
         console.log(err);
       });
   }
@@ -148,16 +159,6 @@ function App() {
     }
   }, [loggedIn]);
 
-  const handleAuth = async (jwt) => {
-    const content = await auth.getContent(jwt).then((res) => {
-      if (res) {
-        setLoggedIn(true);
-        SetUserEmail(res.data.email);
-      }
-    });
-    return content;
-  };
-
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
@@ -165,29 +166,63 @@ function App() {
     }
   }, [loggedIn]);
 
-  const onRegister = ({ email, password }) => {
-    setIsRegister(true);
-    return auth.register(email, password).then((res) => {
-      setIsInfoTooltip(true);
-      res.error && setIsRegister(false);
-      return res;
-    });
-  };
-
-  const onLogin = ({ email, password }) => {
-    return auth.authorize(email, password).then((res) => {
-      if (res.token) {
-        localStorage.setItem("jwt", res.token);
-        setLoggedIn(true);
-      } else {
-        setMessage(res.message);
-      }
-    });
-  };
-
   const onLogout = () => {
     localStorage.removeItem("jwt");
     setLoggedIn(false);
+  };
+
+  // API фронтенд-аутентификации
+  const handleAuth = async (jwt) => {
+    const content = await auth
+      .getContent(jwt)
+      .then((res) => {
+        if (res) {
+          setLoggedIn(true);
+          SetUserEmail(res.data.email);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    return content;
+  };
+
+  const onRegister = ({ email, password }) => {
+    setIsRegister(true);
+    auth
+      .register(email, password)
+      .then((res) => {
+        console.log(res);
+        setIsInfoTooltip(true);
+        navigate("/sign-in");
+        return res;
+      })
+      // .then(() => navigate("/sign-in"))
+      .catch((err) => {
+        setIsInfoTooltip(true);
+        setIsRegister(false);
+        console.log(err);
+      });
+  };
+
+  const onLogin = ({ email, password }) => {
+    auth
+      .authorize(email, password)
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem("jwt", res.token);
+          setLoggedIn(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setMessageError("Что-то пошло не так. Проверьте email и пароль.");
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setMessageError("");
+        }, 4000);
+      });
   };
 
   return (
@@ -238,7 +273,7 @@ function App() {
                 onReg={(data) => setSignUp(data)}
                 onLog={(data) => setSignIn(data)}
                 onLogin={onLogin}
-                message={message}
+                messageError={messageError}
               />
             }
           />
@@ -254,12 +289,14 @@ function App() {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          isEditProfileError={isEditProfileError}
         />
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isEditAvatarError={isEditAvatarError}
         />
 
         <AddPlacePopup

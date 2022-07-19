@@ -2,7 +2,12 @@ import PopupWithForm from "./PopupWithForm";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
+function EditProfilePopup({
+  isOpen,
+  onClose,
+  onUpdateUser,
+  isEditProfileError,
+}) {
   const currentUser = useContext(CurrentUserContext);
   const [state, setState] = useState("");
   const [buttonValue, setButtonValue] = useState("");
@@ -13,6 +18,13 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     setButtonValue("Сохранить");
     inputRef.current.focus();
   }, [currentUser, isOpen]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setState({ name: currentUser.name, about: currentUser.about });
+    }, 2000);
+    setButtonValue("Сохранить");
+  }, [isEditProfileError]);
 
   const handleInputChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
@@ -31,7 +43,9 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
     <PopupWithForm
       // name="edit"
       title="Редактировать профиль"
-      buttonValue={buttonValue}
+      buttonValue={
+        isEditProfileError ? "Ошибка в загрузке данных" : buttonValue
+      }
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}

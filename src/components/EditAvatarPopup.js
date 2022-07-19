@@ -1,9 +1,27 @@
 import PopupWithForm from "./PopupWithForm";
 import React, { useRef, useEffect, useState } from "react";
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
+function EditAvatarPopup({
+  isOpen,
+  onClose,
+  onUpdateAvatar,
+  isEditAvatarError,
+}) {
   const [buttonValue, setButtonValue] = useState("");
   const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+    inputRef.current.value = "";
+    setButtonValue("Сохранить");
+  }, [isOpen]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current.value = "";
+    }, 2000);
+    setButtonValue("Сохранить");
+  }, [isEditAvatarError]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,17 +31,11 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
     });
   };
 
-  useEffect(() => {
-    inputRef.current.focus();
-    inputRef.current.value = "";
-    setButtonValue("Сохранить");
-  }, [isOpen]);
-
   return (
     <PopupWithForm
       // name="avatar"
       title="Обновить аватар"
-      buttonValue={buttonValue}
+      buttonValue={isEditAvatarError ? "Ошибка в загрузке данных" : buttonValue}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
