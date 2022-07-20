@@ -5,8 +5,7 @@ import "../index.css";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import Login from "./Login";
-import Register from "./Register";
+import AuthForm from "./AuthForm";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
@@ -15,7 +14,7 @@ import ImagePopup from "./ImagePopup";
 import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Link } from "react-router-dom";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -33,7 +32,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState("");
   const [userEmail, SetUserEmail] = useState("");
   const [cards, setCards] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem('jwt')));
   const [signIn, setSignIn] = useState(false);
   const [signUp, setSignUp] = useState(false);
   const navigate = useNavigate();
@@ -157,13 +156,8 @@ function App() {
       setSignUp(false);
       navigate("/");
     }
-  }, [loggedIn]);
-
-  useEffect(() => {
     const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      handleAuth(jwt);
-    }
+    jwt && handleAuth(jwt);
   }, [loggedIn]);
 
   const onLogout = () => {
@@ -192,12 +186,10 @@ function App() {
     auth
       .register(email, password)
       .then((res) => {
-        console.log(res);
         setIsInfoTooltip(true);
         navigate("/sign-in");
         return res;
       })
-      // .then(() => navigate("/sign-in"))
       .catch((err) => {
         setIsInfoTooltip(true);
         setIsRegister(false);
@@ -240,47 +232,62 @@ function App() {
             path="/"
             element={
               <ProtectedRoute loggedIn={loggedIn}>
-                <Main
-                  onEditProfile={() => setIsEditProfilePopupOpen(true)}
-                  onAddPlace={() => setIsAddPlacePopupOpen(true)}
-                  onEditAvatar={() => setIsEditAvatarPopupOpen(true)}
-                  onCardClick={(data) => setSelectedCard(data)}
-                  onCardDelete={(data) => {
-                    setIsSubmitPopupOpen(true);
-                    setDeletedCard(data);
-                  }}
-                  onCardLike={handleCardLike}
-                  cards={cards}
-                />
-                <Footer />
+                <>
+                  <Main
+                    onEditProfile={() => setIsEditProfilePopupOpen(true)}
+                    onAddPlace={() => setIsAddPlacePopupOpen(true)}
+                    onEditAvatar={() => setIsEditAvatarPopupOpen(true)}
+                    onCardClick={(data) => setSelectedCard(data)}
+                    onCardDelete={(data) => {
+                      setIsSubmitPopupOpen(true);
+                      setDeletedCard(data);
+                    }}
+                    onCardLike={handleCardLike}
+                    cards={cards}
+                  />
+                  <Footer />
+                </>
               </ProtectedRoute>
             }
           />
-          <Route
-            path="sign-up"
-            element={
-              <Register
-                onReg={(data) => setSignUp(data)}
-                onLog={(data) => setSignIn(data)}
-                onRegister={onRegister}
+
+          { (
+            <>
+              <Route
+                path="sign-up"
+                element={
+                  <AuthForm
+                    onReg={(data) => setSignUp(data)}
+                    onLog={(data) => setSignIn(data)}
+                    onRegister={onRegister}
+                    authForm="register"
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="sign-in"
-            element={
-              <Login
-                onReg={(data) => setSignUp(data)}
-                onLog={(data) => setSignIn(data)}
-                onLogin={onLogin}
-                messageError={messageError}
+              <Route
+                path="sign-in"
+                element={
+                  <AuthForm
+                    onReg={(data) => setSignUp(data)}
+                    onLog={(data) => setSignIn(data)}
+                    onLogin={onLogin}
+                    messageError={messageError}
+                    authForm="login"
+                  />
+                }
               />
-            }
-          />
+            </>
+          )}
+
           <Route
             path="*"
             element={
-              <p style={{ textAlign: "center" }}>Здесь ничего нет: 404!</p>
+              <div style={{ textAlign: "center" }}>
+                <p>Здесь ничего нет: 404!</p>
+                <Link to="/" className="link hover" style={{ fontSize: 14 }}>
+                  На главную страницу
+                </Link>
+              </div>
             }
           />
         </Routes>

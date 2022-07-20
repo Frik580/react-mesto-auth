@@ -25,28 +25,51 @@
 //   },
 // ];
 
-export const obj = {
-  formSelector: ".popup-form",
-  inputSelector: ".popup-form__item",
-  submitButtonSelector: ".popup-form__button",
-  inactiveButtonClass: "popup-form__button_disabled",
-  inputErrorClass: "popup-form__item_type_error",
-  errorClass: "popup-form__item_error_active",
-};
+// export const obj = {
+//   formSelector: ".popup-form",
+//   inputSelector: ".popup-form__item",
+//   submitButtonSelector: ".popup-form__button",
+//   inactiveButtonClass: "popup-form__button_disabled",
+//   inputErrorClass: "popup-form__item_type_error",
+//   errorClass: "popup-form__item_error_active",
+// };
 
-export const popupFormSelectors = {
-  edit: ".popup-form_edit",
-  add: ".popup-form_add",
-  avatar: ".popup-form_avatar",
-};
+// export const popupFormSelectors = {
+//   edit: ".popup-form_edit",
+//   add: ".popup-form_add",
+//   avatar: ".popup-form_avatar",
+// };
 
-export const popupSelectors = {
-  zoom: ".popup_zoom",
-  submit: ".popup_submit",
-  add: ".popup_add",
-  edit: ".popup_edit",
-  avatar: ".popup_avatar",
-};
+// export const popupSelectors = {
+//   zoom: ".popup_zoom",
+//   submit: ".popup_submit",
+//   add: ".popup_add",
+//   edit: ".popup_edit",
+//   avatar: ".popup_avatar",
+// };
+
+// export const config = {
+//   baseUrl: "https://mesto.nomoreparties.co/v1/cohort-42",
+//   headers: {
+//     authorization: "342f1300-29ab-4b49-832f-8ffeb3287cd2",
+//     "Content-Type": "application/json",
+//   },
+// };
+
+// // Редактирование профиля
+// export const avatar = document.querySelector(".profile__avatar");
+// export const buttonEditProfile = document.querySelector(
+//   ".profile__edit-button"
+// );
+
+// export const selectorName = ".profile__title";
+// export const selectorInfo = ".profile__text";
+// export const selectorAvatar = ".profile__avatar";
+
+// // Действия с карточками
+// export const cardListSelector = ".elements__list";
+// export const templateSelector = "#element-template";
+// export const buttonAddCard = document.querySelector(".profile__add-button");
 
 export const config = {
   baseUrl: "https://mesto.nomoreparties.co/v1/cohort-42",
@@ -56,17 +79,3 @@ export const config = {
   },
 };
 
-// Редактирование профиля
-export const avatar = document.querySelector(".profile__avatar");
-export const buttonEditProfile = document.querySelector(
-  ".profile__edit-button"
-);
-
-export const selectorName = ".profile__title";
-export const selectorInfo = ".profile__text";
-export const selectorAvatar = ".profile__avatar";
-
-// Действия с карточками
-export const cardListSelector = ".elements__list";
-export const templateSelector = "#element-template";
-export const buttonAddCard = document.querySelector(".profile__add-button");

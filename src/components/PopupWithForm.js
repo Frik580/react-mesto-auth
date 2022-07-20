@@ -1,7 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 function PopupWithForm({
-  // name,
   title,
   buttonValue,
   isOpen,
@@ -13,7 +12,7 @@ function PopupWithForm({
   isFocus,
 }) {
   useEffect(() => {
-    function handleEscClose(e) {
+    const handleEscClose = (e) => {
       e.key === "Escape" && onClose();
     }
     document.addEventListener("keyup", handleEscClose);
@@ -41,7 +40,6 @@ function PopupWithForm({
         <form
           onSubmit={onSubmit}
           className="form"
-          // name={name}
           noValidate
         >
           <h3 className="form__title">{title}</h3>

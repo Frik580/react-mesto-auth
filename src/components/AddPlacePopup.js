@@ -49,7 +49,6 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isPostCardError }) {
 
   return (
     <PopupWithForm
-      // name="add"
       title="Новое место"
       buttonValue={isPostCardError ? "Ошибка в загрузке данных" : buttonValue}
       isOpen={isOpen}

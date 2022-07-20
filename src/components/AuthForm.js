@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-function Register({ onReg, onLog, onRegister }) {
+function AuthForm({
+  onReg,
+  onLog,
+  messageError,
+  onRegister,
+  onLogin,
+  authForm,
+}) {
   const [state, setState] = useState("");
   const inputRef = useRef();
   const isValid = true;
@@ -13,9 +20,15 @@ function Register({ onReg, onLog, onRegister }) {
   useEffect(() => {
     setState({ email: "", password: "" });
     inputRef.current.focus();
-    onReg(false);
-    onLog(true);
-  }, []);
+    if (authForm === "register") {
+      onReg(false);
+      onLog(true);
+    }
+    if (authForm === "login") {
+      onReg(true);
+      onLog(false);
+    }
+  }, [authForm]);
 
   const handleInputChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
@@ -23,13 +36,20 @@ function Register({ onReg, onLog, onRegister }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    authForm === "register" &&
       onRegister({ email: state.email, password: state.password });
+    authForm === "login" &&
+      onLogin({ email: state.email, password: state.password });
   };
 
   return (
     <div className="conteiner">
       <form onSubmit={handleSubmit} className="form">
-        <h3 className="form__title">Регистрация</h3>
+        <h3 className="form__title">
+          {authForm === "register" && "Регистрация"}
+          {authForm === "login" && "Вход"}
+        </h3>
+        {messageError}
         <fieldset className="form__conteiner">
           <input
             type="email"
@@ -64,17 +84,20 @@ function Register({ onReg, onLog, onRegister }) {
           type="submit"
           name="button"
         >
-          Зарегистрироваться
+          {authForm === "register" && "Зарегистрироваться"}
+          {authForm === "login" && "Войти"}
         </button>
-        <div className="form__text">
-          {`Уже зарегистрированы? `}
-          <Link to="/sign-in" className="link hover" style={{ fontSize: 14 }}>
-            Войти
-          </Link>
-        </div>
+        {authForm === "register" && (
+          <div className="form__text">
+            {`Уже зарегистрированы? `}
+            <Link to="/sign-in" className="link hover" style={{ fontSize: 14 }}>
+              Войти
+            </Link>
+          </div>
+        )}
       </form>
     </div>
   );
 }
 
-export default React.memo(Register);
+export default React.memo(AuthForm);

@@ -41,7 +41,6 @@ function EditProfilePopup({
 
   return (
     <PopupWithForm
-      // name="edit"
       title="Редактировать профиль"
       buttonValue={
         isEditProfileError ? "Ошибка в загрузке данных" : buttonValue
@@ -57,7 +56,7 @@ function EditProfilePopup({
           ref={inputRef}
           value={state.name ?? ""}
           onChange={handleInputChange}
-          id="user-name"
+          // id="user-name"
           name="name"
           className="form__item"
           minLength="2"
@@ -72,7 +71,7 @@ function EditProfilePopup({
           type="text"
           value={state.about ?? ""}
           onChange={handleInputChange}
-          id="about"
+          // id="about"
           name="about"
           className="form__item"
           minLength="2"

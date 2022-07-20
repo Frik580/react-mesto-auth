@@ -33,7 +33,6 @@ function EditAvatarPopup({
 
   return (
     <PopupWithForm
-      // name="avatar"
       title="Обновить аватар"
       buttonValue={isEditAvatarError ? "Ошибка в загрузке данных" : buttonValue}
       isOpen={isOpen}
@@ -46,7 +45,7 @@ function EditAvatarPopup({
         <input
           type="url"
           ref={inputRef}
-          id="avatar"
+          // id="avatar"
           name="avatar"
           className="form__item"
           minLength="2"
