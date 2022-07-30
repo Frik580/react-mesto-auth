@@ -13,28 +13,16 @@ function Card({ card, onCardClick, onCardDelete, onCardLike }) {
     isLiked ? "_active" : ""
   }`;
 
-  function handleCardClick() {
-    onCardClick(card);
-  }
-
-  function handleCardDelete() {
-    onCardDelete(card);
-  }
-
-  function handleLikeClick() {
-    onCardLike(card);
-  }
-
   return (
     <li className="element">
       <img
-        onClick={handleCardClick}
+        onClick={() => onCardClick(card)}
         src={card.link}
         className="element__pic"
         alt={card.name}
       />
       <button
-        onClick={handleCardDelete}
+        onClick={() => onCardDelete(card)}
         className={cardDeleteButtonClassName}
         type="button"
       />
@@ -42,7 +30,7 @@ function Card({ card, onCardClick, onCardDelete, onCardLike }) {
         <h2 className="element__title">{card.name}</h2>
         <div className="element__like">
           <button
-            onClick={handleLikeClick}
+            onClick={() => onCardLike(card)}
             className={cardLikeButtonClassName}
             type="button"
           />

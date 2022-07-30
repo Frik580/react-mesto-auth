@@ -12,7 +12,7 @@ import AddPlacePopup from "./AddPlacePopup";
 import SubmitPopup from "./SubmitPopup";
 import ImagePopup from "./ImagePopup";
 import InfoTooltip from "./InfoTooltip";
-import ProtectedRoute from "./ProtectedRoute";
+import { ProtectedRoute } from "./ProtectedRoute";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { Routes, Route, useNavigate, Link } from "react-router-dom";
 
@@ -32,7 +32,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState("");
   const [userEmail, SetUserEmail] = useState("");
   const [cards, setCards] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem('jwt')));
+  const [loggedIn, setLoggedIn] = useState(
+    Boolean(localStorage.getItem("jwt"))
+  );
   const [signIn, setSignIn] = useState(false);
   const [signUp, setSignUp] = useState(false);
   const navigate = useNavigate();
@@ -72,7 +74,7 @@ function App() {
         setIsEditProfileError(true);
         setTimeout(() => {
           setIsEditProfileError(false);
-        }, 4000);
+        }, 3000);
         console.log(err);
       });
   }
@@ -88,7 +90,7 @@ function App() {
         setIsEditAvatarError(true);
         setTimeout(() => {
           setIsEditAvatarError(false);
-        }, 4000);
+        }, 3000);
         console.log(err);
       });
   }
@@ -105,7 +107,7 @@ function App() {
         setIsPostCardError(true);
         setTimeout(() => {
           setIsPostCardError(false);
-        }, 4000);
+        }, 3000);
         console.log(err);
       });
   }
@@ -173,7 +175,7 @@ function App() {
         if (res) {
           setLoggedIn(true);
           SetUserEmail(res.data.email);
-        }
+        } else setLoggedIn(false);
       })
       .catch((err) => {
         console.log(err);
@@ -251,7 +253,7 @@ function App() {
             }
           />
 
-          { (
+          {!loggedIn && (
             <>
               <Route
                 path="sign-up"
