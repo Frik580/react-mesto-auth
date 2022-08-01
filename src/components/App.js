@@ -12,7 +12,7 @@ import AddPlacePopup from "./AddPlacePopup";
 import SubmitPopup from "./SubmitPopup";
 import ImagePopup from "./ImagePopup";
 import InfoTooltip from "./InfoTooltip";
-import { ProtectedRoute } from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { Routes, Route, useNavigate, Link } from "react-router-dom";
 
@@ -230,28 +230,28 @@ function App() {
           onLogout={onLogout}
         />
         <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute loggedIn={loggedIn}>
-                <>
-                  <Main
-                    onEditProfile={() => setIsEditProfilePopupOpen(true)}
-                    onAddPlace={() => setIsAddPlacePopupOpen(true)}
-                    onEditAvatar={() => setIsEditAvatarPopupOpen(true)}
-                    onCardClick={(data) => setSelectedCard(data)}
-                    onCardDelete={(data) => {
-                      setIsSubmitPopupOpen(true);
-                      setDeletedCard(data);
-                    }}
-                    onCardLike={handleCardLike}
-                    cards={cards}
-                  />
-                  <Footer />
-                </>
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute loggedIn={loggedIn}>
+                  <>
+                    <Main
+                      onEditProfile={() => setIsEditProfilePopupOpen(true)}
+                      onAddPlace={() => setIsAddPlacePopupOpen(true)}
+                      onEditAvatar={() => setIsEditAvatarPopupOpen(true)}
+                      onCardClick={(data) => setSelectedCard(data)}
+                      onCardDelete={(data) => {
+                        setIsSubmitPopupOpen(true);
+                        setDeletedCard(data);
+                      }}
+                      onCardLike={handleCardLike}
+                      cards={cards}
+                    />
+                    <Footer />
+                  </>
+                </ProtectedRoute>
+              }
+            />
 
           {!loggedIn && (
             <>

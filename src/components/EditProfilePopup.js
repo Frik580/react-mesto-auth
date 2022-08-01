@@ -56,7 +56,6 @@ function EditProfilePopup({
           ref={inputRef}
           value={state.name ?? ""}
           onChange={handleInputChange}
-          // id="user-name"
           name="name"
           className="form__item"
           minLength="2"

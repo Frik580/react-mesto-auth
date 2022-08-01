@@ -45,7 +45,6 @@ function EditAvatarPopup({
         <input
           type="url"
           ref={inputRef}
-          // id="avatar"
           name="avatar"
           className="form__item"
           minLength="2"

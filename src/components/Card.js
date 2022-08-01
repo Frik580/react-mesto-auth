@@ -4,14 +4,7 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 function Card({ card, onCardClick, onCardDelete, onCardLike }) {
   const currentUser = useContext(CurrentUserContext);
   const isOwn = card.owner._id === currentUser._id;
-  const cardDeleteButtonClassName = `element__del-button hover element__del-button_${
-    isOwn ? "visible" : "hidden"
-  }`;
-
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
-  const cardLikeButtonClassName = `hover element__like-button${
-    isLiked ? "_active" : ""
-  }`;
 
   return (
     <li className="element">
@@ -23,7 +16,9 @@ function Card({ card, onCardClick, onCardDelete, onCardLike }) {
       />
       <button
         onClick={() => onCardDelete(card)}
-        className={cardDeleteButtonClassName}
+        className={`element__del-button hover element__del-button_${
+          isOwn ? "visible" : "hidden"
+        }`}
         type="button"
       />
       <div className="element__info">
@@ -31,7 +26,7 @@ function Card({ card, onCardClick, onCardDelete, onCardLike }) {
         <div className="element__like">
           <button
             onClick={() => onCardLike(card)}
-            className={cardLikeButtonClassName}
+            className={`hover element__like-button${isLiked ? "_active" : ""}`}
             type="button"
           />
           <p className="element__like-value">{card.likes.length}</p>

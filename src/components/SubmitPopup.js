@@ -16,7 +16,6 @@ function SubmitPopup({ card, isOpen, onClose, onDeleteCard }) {
 
   return (
     <PopupWithForm
-      // name="submit"
       title="Вы уверены?"
       buttonValue={buttonValue}
       isOpen={isOpen}
