@@ -14,7 +14,7 @@ import ImagePopup from "./ImagePopup";
 import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { Routes, Route, useNavigate, Link } from "react-router-dom";
+import { Routes, Route, useNavigate, Link, Navigate } from "react-router-dom";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -274,6 +274,14 @@ function App() {
             </>
           )}
 
+          
+          <Route
+            path="react-mesto-auth"
+            element={
+              <Navigate to="/sign-in" replace />
+            }
+          />
+          
           <Route
             path="*"
             element={
