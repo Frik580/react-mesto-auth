@@ -35,22 +35,30 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(
     Boolean(localStorage.getItem("jwt"))
   );
-  const [signIn, setSignIn] = useState(false);
-  const [signUp, setSignUp] = useState(false);
   const navigate = useNavigate();
 
   // API даннах
+
   useEffect(() => {
-    const promises = [api.getUserInfo(), api.getCardList()];
-    Promise.all(promises)
-      .then((results) => {
-        setCurrentUser(results[0]);
-        setCards(results[1]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (loggedIn) {
+      api
+        .getUserInfo()
+        .then((data) => {
+          setCurrentUser(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      api
+        .getCardList()
+        .then((data) => {
+          setCards(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
 
   function reloadCards() {
     api
@@ -100,8 +108,8 @@ function App() {
       .postCard(data)
       .then((newCard) => {
         setCards([newCard, ...cards]);
-        closeAllPopups();
         reloadCards();
+        closeAllPopups();
       })
       .catch((err) => {
         setIsPostCardError(true);
@@ -135,8 +143,8 @@ function App() {
           return card._id !== id;
         });
         setCards(newCards);
-        closeAllPopups();
         reloadCards();
+        closeAllPopups();
       })
       .catch((err) => {
         console.log(err);
@@ -154,13 +162,11 @@ function App() {
 
   useEffect(() => {
     if (loggedIn) {
-      setSignIn(false);
-      setSignUp(false);
       navigate("/");
     }
     const jwt = localStorage.getItem("jwt");
     jwt && handleAuth(jwt);
-  }, [loggedIn]);
+  }, [loggedIn, navigate]);
 
   const onLogout = () => {
     localStorage.removeItem("jwt");
@@ -222,56 +228,43 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="root">
-        <Header
-          loggedIn={loggedIn}
-          signIn={signIn}
-          signUp={signUp}
-          email={userEmail}
-          onLogout={onLogout}
-        />
+        <Header email={userEmail} onLogout={onLogout} />
         <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute loggedIn={loggedIn}>
-                  <>
-                    <Main
-                      onEditProfile={() => setIsEditProfilePopupOpen(true)}
-                      onAddPlace={() => setIsAddPlacePopupOpen(true)}
-                      onEditAvatar={() => setIsEditAvatarPopupOpen(true)}
-                      onCardClick={(data) => setSelectedCard(data)}
-                      onCardDelete={(data) => {
-                        setIsSubmitPopupOpen(true);
-                        setDeletedCard(data);
-                      }}
-                      onCardLike={handleCardLike}
-                      cards={cards}
-                    />
-                    <Footer />
-                  </>
-                </ProtectedRoute>
-              }
-            />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute loggedIn={loggedIn}>
+                <>
+                  <Main
+                    onEditProfile={() => setIsEditProfilePopupOpen(true)}
+                    onAddPlace={() => setIsAddPlacePopupOpen(true)}
+                    onEditAvatar={() => setIsEditAvatarPopupOpen(true)}
+                    onCardClick={(data) => setSelectedCard(data)}
+                    onCardDelete={(data) => {
+                      setIsSubmitPopupOpen(true);
+                      setDeletedCard(data);
+                    }}
+                    onCardLike={handleCardLike}
+                    cards={cards}
+                  />
+                  <Footer />
+                </>
+              </ProtectedRoute>
+            }
+          />
 
           {!loggedIn && (
             <>
               <Route
                 path="sign-up"
                 element={
-                  <AuthForm
-                    onReg={(data) => setSignUp(data)}
-                    onLog={(data) => setSignIn(data)}
-                    onRegister={onRegister}
-                    authForm="register"
-                  />
+                  <AuthForm onRegister={onRegister} authForm="register" />
                 }
               />
               <Route
                 path="sign-in"
                 element={
                   <AuthForm
-                    onReg={(data) => setSignUp(data)}
-                    onLog={(data) => setSignIn(data)}
                     onLogin={onLogin}
                     messageError={messageError}
                     authForm="login"

@@ -1,14 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-function AuthForm({
-  onReg,
-  onLog,
-  messageError,
-  onRegister,
-  onLogin,
-  authForm,
-}) {
+function AuthForm({ messageError, onRegister, onLogin, authForm }) {
   const [state, setState] = useState("");
   const inputRef = useRef();
   const isValid = true;
@@ -20,14 +13,6 @@ function AuthForm({
   useEffect(() => {
     setState({ email: "", password: "" });
     inputRef.current.focus();
-    if (authForm === "register") {
-      onReg(false);
-      onLog(true);
-    }
-    if (authForm === "login") {
-      onReg(true);
-      onLog(false);
-    }
   }, [authForm]);
 
   const handleInputChange = (e) => {

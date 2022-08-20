@@ -30,14 +30,14 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isPostCardError }) {
     setButtonValue("Создать");
     reset();
     inputRef.current.focus();
-  }, [isOpen]);
+  }, [isOpen, reset]);
 
   useEffect(() => {
     setTimeout(() => {
       reset();
     }, 2000);
     setButtonValue("Создать");
-  }, [isPostCardError]);
+  }, [isPostCardError, reset]);
 
   const onHandle = (data) => {
     onAddPlace({

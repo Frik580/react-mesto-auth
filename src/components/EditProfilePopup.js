@@ -24,7 +24,7 @@ function EditProfilePopup({
       setState({ name: currentUser.name, about: currentUser.about });
     }, 2000);
     setButtonValue("Сохранить");
-  }, [isEditProfileError]);
+  }, [currentUser.about, currentUser.name, isEditProfileError]);
 
   const handleInputChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });

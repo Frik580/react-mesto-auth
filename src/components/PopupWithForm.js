@@ -19,7 +19,7 @@ function PopupWithForm({
     return () => {
       document.removeEventListener("keyup", handleEscClose);
     };
-  }, []);
+  }, [onClose, isOpen]);
 
   return (
     <div
